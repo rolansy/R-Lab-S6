@@ -24,6 +24,6 @@ plot_data <- data.frame(
   ChiSquareValues = chi_square_values
 )
 
-plot(data,chi)
+plot(data,chi_square_values)
 
 boxplot(data$yes,data$no,names=c("Yes","No"),main="Boxplot of Yes and No",na.rm=TRUE)
