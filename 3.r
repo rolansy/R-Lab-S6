@@ -37,14 +37,26 @@ factorial_of_fibonacci<-function(n){
 
 check_fibonacci_in_dataframe<-function(df){
   fibs <- fibonacci(max(df))
-  fibs_in_df <- df[df %in% fibs]
-  fibs_in_df <- unique(fibs_in_df)  # Ensure unique Fibonacci numbers
-  if (length(fibs_in_df) > 0) {
-    cat("Fibonacci numbers in dataframe and their factorials:\n")
-    print(sapply(fibs_in_df, function(x) c(Fibonacci = x, Factorial = factorial(x))))
-  } else {
-    cat("No Fibonacci numbers found in the dataframe.\n")
+  fin <- c()
+  for (i in df) {
+    for (j in i) {
+      if (j %in% fibs) {
+        fin <- c(fin, j)
+        cat("Fibonacci number ", j, " found in dataframe.\n")
+        cat("Factorial of ", j, " is ", factorial(j), "\n")
+      }
+    }
   }
+  fin
+  if (length(fin)==0){
+    cat("No Fibonacci numbers found in dataframe.\n")
+  }else{
+    cat("Fibonacci numbers in dataframe :\n")
+    print(fin)
+    cat("Factorials of Fibonacci numbers in dataframe:\n")
+    print(lapply(fin,factorial))
+  }
+  
 }
 
 menu<-function(){
