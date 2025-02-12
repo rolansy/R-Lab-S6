@@ -2,10 +2,12 @@
 if (!require("readxl")) install.packages("readxl", dependencies = TRUE)
 if (!require("ggplot2")) install.packages("ggplot2", dependencies = TRUE)
 if (!require("lattice")) install.packages("lattice", dependencies = TRUE)
+if (!require("tidyverse")) install.packages("tidyverse", dependencies = TRUE)
 
 library(readxl)
 library(ggplot2)
 library(lattice)
+library(tidyverse)
 
 # Read the data from the Excel file
 file_path <- "stock_price.xlsx"
@@ -41,13 +43,17 @@ ggplot(data, aes(x = Open, y = Close)) +
 xyplot(Close ~ Open, data = data, type = c("p", "r"), auto.key = TRUE,
        main = "Simple Linear Regression (Lattice)", xlab = "Open Price", ylab = "Close Price")
 
-# Plot Multiple Linear Regression using ggplot2
-ggplot(data, aes(x = Open, y = Close, color = Volume)) +
+# Plot Multiple Linear Regression using ggplot2 with facets
+data_long <- data %>%
+  pivot_longer(cols = c(Open, High, Low, Volume), names_to = "Predictor", values_to = "Value")
+
+ggplot(data_long, aes(x = Value, y = Close)) +
     geom_point() +
     geom_smooth(method = "lm", col = "blue") +
-    labs(title = "Multiple Linear Regression", x = "Open Price", y = "Close Price") +
+    facet_wrap(~ Predictor, scales = "free_x") +
+    labs(title = "Multiple Linear Regression", x = "Predictor Value", y = "Close Price") +
     theme_minimal()
 
-# Plot Multiple Linear Regression using lattice
-xyplot(Close ~ Open | factor(Volume), data = data, type = c("p", "r"), auto.key = TRUE,
-       main = "Multiple Linear Regression (Lattice)", xlab = "Open Price", ylab = "Close Price")
+# Plot Multiple Linear Regression using lattice with facets
+xyplot(Close ~ Value | Predictor, data = data_long, type = c("p", "r"), auto.key = TRUE,
+       main = "Multiple Linear Regression (Lattice)", xlab = "Predictor Value", ylab = "Close Price")
