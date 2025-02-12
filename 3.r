@@ -8,7 +8,7 @@ is_palindrome<-function(df){
   print(df)
   mat<-as.matrix(df)
   rownames(mat) <- NULL
-  colnames(mat) <- NULL
+  colnames(mat) <- NULL 
   return (identical(mat,t(mat)))
 }
 
