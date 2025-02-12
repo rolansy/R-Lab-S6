@@ -34,17 +34,17 @@ kmeans <- function(data, k, max_iter = 100) {
     
     old_centroids <- centroids
   }
-  
   return(list(clusters = clusters, centroids = centroids))
 }
 
 kmeans_result <- kmeans(data, k = 2)
-
 data$cluster <- as.factor(kmeans_result$clusters)
 
-ggplot(data, aes(x = x, y = y, color = cluster)) +
-  geom_point(size = 3) +
-  labs(title = "Manual K-means Clustering", x = "X-axis", y = "Y-axis") +
-  theme_minimal()
+  centroids_df <- as.data.frame(kmeans_result$centroids)
+  centroids_df$cluster <- as.factor(1:nrow(centroids_df))
 
-
+  ggplot(data, aes(x = x, y = y, color = cluster)) +
+    geom_point(size = 3) +
+    geom_point(data = centroids_df, aes(x = x, y = y), color = "black", shape = "*", size = 10) +
+    labs(title = "Manual K-means Clustering", x = "X-axis", y = "Y-axis") +
+    theme_minimal()
