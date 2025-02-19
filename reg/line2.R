@@ -34,6 +34,28 @@ xyplot(AQI ~ PM2.5, data = air_quality,
        main = "AQI vs PM2.5 (lattice)",
        type = c("p", "r"))
 
+# Perform simple linear regression
+simple_model <- lm(AQI ~ PM2.5, data = air_quality)
+
+# Summary of the simple model
+summary(simple_model)
+
+# Predict AQI using the simple model
+simple_predictions <- predict(simple_model, air_quality)
+
+# Evaluate the performance of the simple model
+# Calculate R-squared
+simple_rsquared <- cor(air_quality$AQI, simple_predictions)^2
+cat("Simple Model R-squared:", simple_rsquared, "\n")
+
+# Calculate RMSE (Root Mean Squared Error)
+simple_rmse <- sqrt(mean((air_quality$AQI - simple_predictions)^2))
+cat("Simple Model RMSE:", simple_rmse, "\n")
+
+# Calculate MAE (Mean Absolute Error)
+simple_mae <- mean(abs(air_quality$AQI - simple_predictions))
+cat("Simple Model MAE:", simple_mae, "\n")
+
 # Perform multiple linear regression
 model <- lm(AQI ~ PM2.5 + PM10 + NO + NO2 + NOx + NH3 + CO + SO2 + O3 + Benzene + Toluene + Xylene, data = air_quality)
 
@@ -46,15 +68,15 @@ predictions <- predict(model, air_quality)
 # Evaluate the performance of the model
 # Calculate R-squared
 rsquared <- cor(air_quality$AQI, predictions)^2
-cat("R-squared:", rsquared, "\n")
+cat("Multiple Model R-squared:", rsquared, "\n")
 
 # Calculate RMSE (Root Mean Squared Error)
 rmse <- sqrt(mean((air_quality$AQI - predictions)^2))
-cat("RMSE:", rmse, "\n")
+cat("Multiple Model RMSE:", rmse, "\n")
 
 # Calculate MAE (Mean Absolute Error)
 mae <- mean(abs(air_quality$AQI - predictions))
-cat("MAE:", mae, "\n")
+cat("Multiple Model MAE:", mae, "\n")
 
 # Reshape data for faceting without using tidyverse
 air_quality_long <- reshape(air_quality, varying = list(c("PM2.5", "PM10", "NO", "NO2", "NOx", "NH3", "CO", "SO2", "O3", "Benzene", "Toluene", "Xylene")), 
@@ -74,5 +96,3 @@ ggplot(air_quality_long, aes(x = Value, y = AQI)) +
 # Plot Multiple Linear Regression using lattice with facets
 xyplot(AQI ~ Value | Predictor, data = air_quality_long, type = c("p", "r"), auto.key = TRUE,
        main = "Multiple Linear Regression (Lattice)", xlab = "Predictor Value", ylab = "AQI")
-
-
