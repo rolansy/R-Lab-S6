@@ -2,12 +2,13 @@
 if (!require("readxl")) install.packages("readxl", dependencies = TRUE)
 if (!require("ggplot2")) install.packages("ggplot2", dependencies = TRUE)
 if (!require("lattice")) install.packages("lattice", dependencies = TRUE)
-if (!require("tidyverse")) install.packages("tidyverse", dependencies = TRUE)
+if (!requireNamespace("dplyr", quietly = TRUE)) install.packages("dplyr", dependencies = TRUE)
+if (!requireNamespace("tidyr", quietly = TRUE)) install.packages("tidyr", dependencies = TRUE)
 
 library(readxl)
 library(ggplot2)
-library(lattice)
-library(tidyverse)
+library(dplyr)
+library(tidyr)
 
 # Read the data from the Excel file
 file_path <- "stock_price.xlsx"
@@ -57,3 +58,4 @@ ggplot(data_long, aes(x = Value, y = Close)) +
 # Plot Multiple Linear Regression using lattice with facets
 xyplot(Close ~ Value | Predictor, data = data_long, type = c("p", "r"), auto.key = TRUE,
        main = "Multiple Linear Regression (Lattice)", xlab = "Predictor Value", ylab = "Close Price")
+
