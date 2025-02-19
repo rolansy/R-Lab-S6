@@ -1,91 +1,66 @@
-# Load necessary libraries
 if (!require("ggplot2")) install.packages("ggplot2", dependencies = TRUE)
 if (!require("lattice")) install.packages("lattice", dependencies = TRUE)
 
 library(ggplot2)
 library(lattice)
 
-# Load the dataset
 file_path <- "reg/city_day.csv"
 air_quality <- read.csv(file_path)
 
-# Remove rows with missing values
 air_quality <- na.omit(air_quality)
-
-# Check the structure of the dataset
+'''
 str(air_quality)
 
-# Check for missing values
 sum(is.na(air_quality))
 
-# Summary statistics
 summary(air_quality)
-
-# Plot AQI vs other variables
-# Using ggplot2 for PM2.5
+'''
 ggplot(air_quality, aes(x = PM2.5, y = AQI)) +
   geom_point() +
   geom_smooth(method = "lm") +
   labs(x = "PM2.5", y = "AQI", title = "AQI vs PM2.5 (ggplot2)")
 
-# Using lattice for PM2.5
 xyplot(AQI ~ PM2.5, data = air_quality,
        xlab = "PM2.5", ylab = "AQI",
        main = "AQI vs PM2.5 (lattice)",
        type = c("p", "r"))
 
-# Perform simple linear regression
 simple_model <- lm(AQI ~ PM2.5, data = air_quality)
 
-# Summary of the simple model
-summary(simple_model)
+#summary(simple_model)
 
-# Predict AQI using the simple model
 simple_predictions <- predict(simple_model, air_quality)
 
-# Evaluate the performance of the simple model
-# Calculate R-squared
 simple_rsquared <- cor(air_quality$AQI, simple_predictions)^2
 cat("Simple Model R-squared:", simple_rsquared, "\n")
 
-# Calculate RMSE (Root Mean Squared Error)
 simple_rmse <- sqrt(mean((air_quality$AQI - simple_predictions)^2))
 cat("Simple Model RMSE:", simple_rmse, "\n")
 
-# Calculate MAE (Mean Absolute Error)
 simple_mae <- mean(abs(air_quality$AQI - simple_predictions))
 cat("Simple Model MAE:", simple_mae, "\n")
 
-# Perform multiple linear regression
 model <- lm(AQI ~ PM2.5 + PM10 + NO + NO2 + NOx + NH3 + CO + SO2 + O3 + Benzene + Toluene + Xylene, data = air_quality)
 
-# Summary of the model
-summary(model)
+#summary(model)
 
-# Predict AQI using the model
 predictions <- predict(model, air_quality)
 
-# Evaluate the performance of the model
-# Calculate R-squared
 rsquared <- cor(air_quality$AQI, predictions)^2
 cat("Multiple Model R-squared:", rsquared, "\n")
 
-# Calculate RMSE (Root Mean Squared Error)
 rmse <- sqrt(mean((air_quality$AQI - predictions)^2))
 cat("Multiple Model RMSE:", rmse, "\n")
 
-# Calculate MAE (Mean Absolute Error)
 mae <- mean(abs(air_quality$AQI - predictions))
 cat("Multiple Model MAE:", mae, "\n")
 
-# Reshape data for faceting without using tidyverse
 air_quality_long <- reshape(air_quality, varying = list(c("PM2.5", "PM10", "NO", "NO2", "NOx", "NH3", "CO", "SO2", "O3", "Benzene", "Toluene", "Xylene")), 
                             v.names = "Value", 
                             timevar = "Predictor", 
                             times = c("PM2.5", "PM10", "NO", "NO2", "NOx", "NH3", "CO", "SO2", "O3", "Benzene", "Toluene", "Xylene"), 
                             direction = "long")
 
-# Plot Multiple Linear Regression using ggplot2 with facets
 ggplot(air_quality_long, aes(x = Value, y = AQI)) +
   geom_point() +
   geom_smooth(method = "lm", col = "blue") +
@@ -93,6 +68,53 @@ ggplot(air_quality_long, aes(x = Value, y = AQI)) +
   labs(title = "Multiple Linear Regression", x = "Predictor Value", y = "AQI") +
   theme_minimal()
 
-# Plot Multiple Linear Regression using lattice with facets
 xyplot(AQI ~ Value | Predictor, data = air_quality_long, type = c("p", "r"), auto.key = TRUE,
        main = "Multiple Linear Regression (Lattice)", xlab = "Predictor Value", ylab = "AQI")
+
+model <- lm(AQI ~ PM2.5 + PM10 + NO + NO2 + NOx + NH3 + CO + SO2 + O3 + Benzene + Toluene + Xylene, data = air_quality)
+
+plot_data <- data.frame(AQI = air_quality$AQI, 
+            PM2.5 = air_quality$PM2.5, 
+            PM10 = air_quality$PM10, 
+            NO = air_quality$NO, 
+            NO2 = air_quality$NO2, 
+            NOx = air_quality$NOx, 
+            NH3 = air_quality$NH3, 
+            CO = air_quality$CO, 
+            SO2 = air_quality$SO2, 
+            O3 = air_quality$O3, 
+            Benzene = air_quality$Benzene, 
+            Toluene = air_quality$Toluene, 
+            Xylene = air_quality$Xylene)
+
+library(reshape2)
+plot_data_long <- melt(plot_data, id.vars = "AQI", variable.name = "Predictor", value.name = "Value")
+
+ggplot(plot_data_long, aes(x = Value, y = AQI, color = Predictor)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(title = "Multiple Linear Regression", x = "Predictor Value", y = "AQI") +
+  theme_minimal()
+
+# Test sample values to predict AQI using the multiple model
+sample_values <- data.frame(
+  PM2.5 = c(50, 80),
+  PM10 = c(60, 90),
+  NO = c(9, 30),
+  NO2 = c(25, 35),
+  NOx = c(45, 55),
+  NH3 = c(12.2, 32.8),
+  CO = c(1.9, 17.8),
+  SO2 = c(45,69),
+  O3 = c(33,55),
+  Benzene = c(0.5, 2.7),
+  Toluene = c(1, 21.5),
+  Xylene = c(1.3, 6.4)
+)
+
+model
+sample_predictions <- predict(model, sample_values)
+predict(model,sample_values)
+cat("Predicted AQI for sample values:\n")
+print(sample_predictions)
+
