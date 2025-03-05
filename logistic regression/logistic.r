@@ -26,6 +26,11 @@ predict_species <- function(model, new_data) {
 predicted_species <- predict_species(simple_log_model, new_data)
 cat("Predicted species (Simple Logistic Regression):", predicted_species)
 
+# For simple logistic regression
+predicted_species_simple <- predict_species(simple_log_model, new_data)
+cat("Predicted species (Simple Logistic Regression):", predicted_species_simple)
+
+
 # multiple logistic regression
 multi_log_model <- multinom(Species ~ ., data = trainData)
 predictions <- predict(multi_log_model, newdata = testData, type = "class")
@@ -35,9 +40,20 @@ predict_species <- function(model, new_data) {
   predict(model, newdata = new_data, type = "class")
 }
 predicted_species <- predict_species(multi_log_model, new_data)
-cat("Predicted species (Multinomial Logistic Regression):", predicted_species)
+cat("\nPredicted species (Multinomial Logistic Regression):", predicted_species)
 
-# Plotting the logistic regression results
+predict_species <- function(model, new_data) {
+  prediction <- predict(model, newdata = new_data, type = "probs")
+  species <- colnames(prediction)[apply(prediction, 1, which.max)]
+  return(species)
+}
+
+
+
+# For multiple logistic regression
+predicted_species_multi <- predict_species(multi_log_model, new_data)
+cat("\nPredicted species (Multinomial Logistic Regression):", predicted_species_multi)
+
 # Plotting the logistic regression results
 ggplot(trainData, aes(x = Petal.Length, y = Petal.Width, color = Species)) +
     geom_point() +
@@ -55,3 +71,6 @@ ggplot(trainData, aes(x = Petal.Length, y = as.numeric(Species == "virginica")))
              x = "Petal Length",
              y = "Probability of Virginica") +
     theme_minimal()
+
+
+
