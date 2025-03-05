@@ -4,7 +4,7 @@ if (!require("lattice")) install.packages("lattice", dependencies = TRUE)
 library(ggplot2)
 library(lattice)
 
-file_path <- "reg/city_day.csv"
+file_path <- "linear_regression/city_day.csv"
 air_quality <- read.csv(file_path)
 
 air_quality <- na.omit(air_quality)
@@ -95,6 +95,9 @@ ggplot(plot_data_long, aes(x = Value, y = AQI, color = Predictor)) +
   geom_smooth(method = "lm", se = FALSE) +
   labs(title = "Multiple Linear Regression", x = "Predictor Value", y = "AQI") +
   theme_minimal()
+
+xyplot(AQI ~ Value, groups = Predictor, data = plot_data_long, type = c("p", "r"), auto.key = list(columns = 3),
+       main = "Multiple Linear Regression (Lattice)", xlab = "Predictor Value", ylab = "AQI")
 
 # Test sample values to predict AQI using the multiple model
 sample_values <- data.frame(
