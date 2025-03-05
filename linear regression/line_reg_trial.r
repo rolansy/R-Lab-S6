@@ -3,7 +3,7 @@
 library(ggplot2)
 library(lattice)
 library(caret)
-air_quality <- read.csv("reg/city_day.csv",header = TRUE)
+air_quality <- read.csv("linear regression/city_day.csv",header = TRUE)
 air_quality <- na.omit(air_quality)
 ggplot(air_quality, aes(x = PM2.5, y = AQI)) +geom_point() +geom_smooth(method = "lm") +labs(x = "PM2.5", y = "AQI", title = "AQI vs PM2.5 (ggplot2)")
 xyplot(AQI ~ PM2.5, data = air_quality, xlab = "PM2.5", ylab = "AQI",main = "AQI vs PM2.5 (lattice plot)",type = c("p", "r"))
@@ -56,3 +56,4 @@ Predicted AQI: 179.675
 RMSE: 29.14142 
                             [ggplot & lattice plot also]
 '''
+
