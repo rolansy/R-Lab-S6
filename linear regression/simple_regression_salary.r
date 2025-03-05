@@ -4,7 +4,7 @@ if (!require("lattice")) install.packages("lattice", dependencies = TRUE)
 library(ggplot2)
 library(lattice)
 
-file_path <- "reg/Salary_dataset.csv"
+file_path <- "linear regression/Salary_dataset.csv"
 salary_data <- read.csv(file_path)
 
 ggplot(salary_data, aes(x = YearsExperience, y = Salary)) +
