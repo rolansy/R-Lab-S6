@@ -4,41 +4,10 @@ if (!require("lattice")) install.packages("lattice", dependencies = TRUE)
 library(ggplot2)
 library(lattice)
 
-file_path <- "linear_regression/city_day.csv"
+file_path <- "linear regression/city_day.csv"
 air_quality <- read.csv(file_path)
 
 air_quality <- na.omit(air_quality)
-'''
-str(air_quality)
-
-sum(is.na(air_quality))
-
-summary(air_quality)
-'''
-ggplot(air_quality, aes(x = PM2.5, y = AQI)) +
-  geom_point() +
-  geom_smooth(method = "lm") +
-  labs(x = "PM2.5", y = "AQI", title = "AQI vs PM2.5 (ggplot2)")
-
-xyplot(AQI ~ PM2.5, data = air_quality,
-       xlab = "PM2.5", ylab = "AQI",
-       main = "AQI vs PM2.5 (lattice)",
-       type = c("p", "r"))
-
-simple_model <- lm(AQI ~ PM2.5, data = air_quality)
-
-#summary(simple_model)
-
-simple_predictions <- predict(simple_model, air_quality)
-
-simple_rsquared <- cor(air_quality$AQI, simple_predictions)^2
-cat("Simple Model R-squared:", simple_rsquared, "\n")
-
-simple_rmse <- sqrt(mean((air_quality$AQI - simple_predictions)^2))
-cat("Simple Model RMSE:", simple_rmse, "\n")
-
-simple_mae <- mean(abs(air_quality$AQI - simple_predictions))
-cat("Simple Model MAE:", simple_mae, "\n")
 
 model <- lm(AQI ~ PM2.5 + PM10 + NO + NO2 + NOx + NH3 + CO + SO2 + O3 + Benzene + Toluene + Xylene, data = air_quality)
 
@@ -60,16 +29,6 @@ air_quality_long <- reshape(air_quality, varying = list(c("PM2.5", "PM10", "NO",
                             timevar = "Predictor", 
                             times = c("PM2.5", "PM10", "NO", "NO2", "NOx", "NH3", "CO", "SO2", "O3", "Benzene", "Toluene", "Xylene"), 
                             direction = "long")
-
-ggplot(air_quality_long, aes(x = Value, y = AQI)) +
-  geom_point() +
-  geom_smooth(method = "lm", col = "blue") +
-  facet_wrap(~ Predictor, scales = "free_x") +
-  labs(title = "Multiple Linear Regression", x = "Predictor Value", y = "AQI") +
-  theme_minimal()
-
-xyplot(AQI ~ Value | Predictor, data = air_quality_long, type = c("p", "r"), auto.key = TRUE,
-       main = "Multiple Linear Regression (Lattice)", xlab = "Predictor Value", ylab = "AQI")
 
 model <- lm(AQI ~ PM2.5 + PM10 + NO + NO2 + NOx + NH3 + CO + SO2 + O3 + Benzene + Toluene + Xylene, data = air_quality)
 
@@ -114,6 +73,8 @@ sample_values <- data.frame(
   Toluene = c(1, 21.5),
   Xylene = c(1.3, 6.4)
 )
+cat("Sample values:\n")
+print(sample_values)
 
 model
 sample_predictions <- predict(model, sample_values)
