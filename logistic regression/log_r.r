@@ -29,8 +29,8 @@ menu <- function() {
       
       # Confusion Matrix
       binomial_cm <- table(Predicted = binomial_predicted_class, Actual = binomial_data$Purchase)
-      #print("Confusion Matrix for Binomial Logistic Regression:")
-      #print(binomial_cm)
+      print("Confusion Matrix for Binomial Logistic Regression:")
+      print(binomial_cm)
       
       # Accuracy Calculation
       binomial_accuracy <- sum(diag(binomial_cm)) / sum(binomial_cm)
@@ -68,8 +68,8 @@ menu <- function() {
       
       # Confusion Matrix
       multinomial_cm <- table(Predicted = multinomial_predicted_class, Actual = iris_data$species)
-      #print("Confusion Matrix for Multinomial Logistic Regression:")
-      #print(multinomial_cm)
+      print("Confusion Matrix for Multinomial Logistic Regression:")
+      print(multinomial_cm)
       
       multinomial_accuracy <- sum(diag(multinomial_cm)) / sum(multinomial_cm)
       print(paste("Multinomial Model Accuracy:", round(multinomial_accuracy, 4)))
