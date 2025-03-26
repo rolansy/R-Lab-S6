@@ -7,7 +7,7 @@ library(C50)
 # Function for Program 1 (SVM)
 run_svm_program <- function() {
   # Load dataset
-  dataset = read.csv('decision tree/svm.csv')
+  dataset = read.csv('~/Ronal/R-Lab-S6/decision tree/svm.csv')
   
   # Selecting relevant columns
   dataset = dataset[, 3:5]  # Keeping only Age, EstimatedSalary, and Purchased
@@ -100,7 +100,7 @@ run_svm_program <- function() {
 # Function for Program 2 (Decision Tree)
 run_decision_tree_program <- function() {
   # Load the dataset
-  play_tennis_data <- read.csv("decision tree/tennis.csv")
+  play_tennis_data <- read.csv("~/Ronal/R-Lab-S6/decision tree/tennis.csv")
   
   # Convert categorical columns to factors
   play_tennis_data$Outlook <- factor(play_tennis_data$Outlook, levels = c("Sunny", "Overcast", "Rain"))
