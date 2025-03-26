@@ -36,7 +36,7 @@ run_svm_program <- function() {
   
   # Confusion Matrix
   cm = table(test_set[, 3], y_pred)
-  print("Confusion Matrix:")
+  print("Confusion Matrix : ")
   print(cm)
   
   # Function to visualize decision boundary
@@ -51,13 +51,15 @@ run_svm_program <- function() {
     plot(set[, -3], 
          main = title, 
          xlab = 'Age', ylab = 'Estimated Salary', 
-         xlim = range(X1), ylim = range(X2))
+         xlim = range(X1), ylim = range(X2), 
+         col = ifelse(set[, 3] == 1, 'darkgreen', 'darkred'), 
+         pch = 19, cex = 1.2)
     
-    contour(X1, X2, matrix(as.numeric(y_grid), length(X1), length(X2)), add = TRUE)
+    contour(X1, X2, matrix(as.numeric(y_grid), length(X1), length(X2)), 
+        add = TRUE, drawlabels = TRUE, lwd = 2, col = "blue")
+    points(grid_set, pch = '.', col = ifelse(y_grid == 1, 'lightgreen', 'lightpink'))
     
-    points(grid_set, pch = '.', col = ifelse(y_grid == 1, 'coral1', 'aquamarine'))
-    
-    points(set, pch = 21, bg = ifelse(set[, 3] == 1, 'green4', 'red3'))
+    points(set, pch = 21, bg = ifelse(set[, 3] == 1, 'green4', 'red3'), cex = 1)
   }
   
   # Visualizing the Training set results
@@ -69,8 +71,8 @@ run_svm_program <- function() {
   # User Input for Prediction
   pred1 <- function() {
     # Get user input for Age and Estimated Salary
-    new_age = as.numeric(readline(prompt = "Enter Age: "))
-    new_salary = as.numeric(readline(prompt = "Enter Estimated Salary: "))
+    new_age = as.numeric(readline(prompt = "Enter Age : "))
+    new_salary = as.numeric(readline(prompt = "Enter Salary : "))
     
     # Handle invalid input
     if (is.na(new_age) | is.na(new_salary)) {
@@ -87,9 +89,9 @@ run_svm_program <- function() {
     
     # Display result
     if (prediction == 1) {
-      cat("\nPrediction: The person is likely to Purchase.\n")
+      cat("\nPrediction Result:\n The person is likely to Purchase.\n")
     } else {
-      cat("\nPrediction: The person is NOT likely to Purchase.\n")
+      cat("\nPrediction Result:\n The person is NOT likely to Purchase.\n")
     }
   }
   
@@ -114,19 +116,12 @@ run_decision_tree_program <- function() {
   
   # Function for custom user input
   get_user_input <- function() {
-    cat("Enter the following options:\n")
+    cat("Enter Options for the following :\n")
     
-    cat("1. Outlook (Sunny, Overcast, Rain): ")
-    outlook <- readline()
-    
-    cat("2. Temperature (Hot, Mild, Cool): ")
-    temperature <- readline()
-    
-    cat("3. Humidity (High, Normal): ")
-    humidity <- readline()
-    
-    cat("4. Wind (Weak, Strong): ")
-    wind <- readline()
+    outlook <- readline(prompt = "Enter Outlook (Sunny, Overcast, Rain): ")
+    temperature <- readline(prompt = "Enter Temperature (Hot, Mild, Cool): ")
+    humidity <- readline(prompt = "Enter Humidity (High, Normal): ")
+    wind <- readline(prompt = "Enter Wind (Weak, Strong): ")
     
     return(data.frame(
       Outlook = factor(outlook, levels = c("Sunny", "Overcast", "Rain")),
@@ -137,30 +132,37 @@ run_decision_tree_program <- function() {
   }
   
   # Visualize the decision tree using C5.0's built-in plot function
-  plot(model, main = "Decision Tree Visualization", type = "simple")
+  library(partykit)
+  tree <- as.party(model)
+  plot(tree, main = "Decision Tree Visualization", type = "simple", gp = gpar(fontsize = 10, col = "blue"))
   
-  # Get user input and make a prediction
-  cat("Provide input values for prediction:\n")
   test_data <- get_user_input()
   prediction <- predict(model, test_data)
   cat(paste("Predicted Class:", prediction, "\n"))
+  
+  # Display result based on prediction
+  if (prediction == "Yes") {
+    cat("\nPrediction Result:\n The person is likely to Play Tennis.\n")
+  } else {
+    cat("\nPrediction Result:\n The person is NOT likely to Play Tennis.\n")
+  }
 }
 
 # Main Menu
 main_menu <- function() {
   while (TRUE) {
-    cat("\n--- Main Menu ---\n")
-    cat("1. Run SVM Program\n")
-    cat("2. Run Decision Tree Program\n")
+    cat("\nMain Menu\n")
+    cat("1. SVM\n")
+    cat("2. Decision Tree\n")
     cat("3. Exit\n")
-    choice <- as.numeric(readline(prompt = "Enter your choice (1, 2, or 3): "))
+    choice <- as.numeric(readline(prompt = "Enter your choice : "))
     
     if (choice == 1) {
       run_svm_program()
     } else if (choice == 2) {
       run_decision_tree_program()
     } else if (choice == 3) {
-      cat("Exiting the program. Goodbye!\n")
+      cat("Exiting...\n")
       break
     } else {
       cat("Invalid choice! Please try again.\n")
